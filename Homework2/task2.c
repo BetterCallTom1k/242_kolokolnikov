@@ -1,9 +1,3 @@
-/*
- * Print the middle line of a text file.
- * The "middle line" is the line that begins after position file_size/2.
- * Uses open/close/read/write/lseek/fstat; buffers I/O at 4096 bytes.
- * Usage: ./task2 <file>
- */
 #include <fcntl.h>
 #include <unistd.h>
 #include <sys/stat.h>
@@ -25,13 +19,12 @@ int main(int argc, char *argv[]) {
     struct stat st;
     fstat(fd, &st);
 
-    /* Jump to the midpoint; skip the rest of the partial line there */
     lseek(fd, st.st_size / 2, SEEK_SET);
 
     char rbuf[BUF_SIZE];
     char wbuf[BUF_SIZE];
     int  wpos  = 0;
-    int  state = 0; /* 0 = skip to newline, 1 = print line, 2 = done */
+    int  state = 0;
     ssize_t n;
 
     while (state < 2 && (n = read(fd, rbuf, BUF_SIZE)) > 0) {

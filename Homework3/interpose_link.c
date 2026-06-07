@@ -1,8 +1,3 @@
-/* Link-time interpositioning for fred and john.
- * Compiled with -DLINKTIME; linked with -Wl,--wrap,fred -Wl,--wrap,john.
- * The linker rewrites: calls to fred -> __wrap_fred,
- *                       calls to __real_fred -> original fred.
- */
 #ifdef LINKTIME
 #include <stdio.h>
 #include "lib.h"

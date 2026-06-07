@@ -1,16 +1,3 @@
-/*
- * executer.c
- * Usage: ./executer "cmd0 arg0 arg1 ..." "cmd1 arg0 arg1 ..." ...
- *
- * For each command string:
- *   1. Create a pipe.
- *   2. Fork child 1: runs the command with its arguments, stdout -> pipe.
- *   3. Fork child 2: runs "wc -c", stdin <- pipe. Prints byte count.
- *   4. Parent closes both pipe ends and waits for both children.
- *
- * Equivalent shell logic:
- *   for C; do eval $C | wc -c; done
- */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -26,7 +13,6 @@ static void err_exit(const char *msg)
     exit(EXIT_FAILURE);
 }
 
-/* Split whitespace-delimited cmd into argv[]. Returns arg count. */
 static int parse_cmd(char *cmd, char *args[], int max)
 {
     int n = 0;
@@ -59,7 +45,6 @@ int main(int argc, char *argv[])
         int pfd[2];
         if (pipe(pfd) == -1) err_exit("pipe");
 
-        /* Child 1: run the requested command; redirect stdout to pipe. */
         pid_t pid1 = fork();
         if (pid1 == -1) err_exit("fork");
         if (pid1 == 0) {
@@ -70,7 +55,6 @@ int main(int argc, char *argv[])
             err_exit("execvp");
         }
 
-        /* Child 2: run "wc -c"; redirect stdin from pipe. Prints byte count. */
         pid_t pid2 = fork();
         if (pid2 == -1) err_exit("fork");
         if (pid2 == 0) {
@@ -81,7 +65,6 @@ int main(int argc, char *argv[])
             err_exit("execlp wc");
         }
 
-        /* Parent: close pipe ends and wait for both children. */
         close(pfd[0]);
         close(pfd[1]);
         if (waitpid(pid1, NULL, 0) == -1) err_exit("waitpid");

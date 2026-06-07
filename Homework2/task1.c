@@ -1,8 +1,3 @@
-/*
- * Print N lines from a file starting at line I.
- * Usage: ./task1 <file> <I> <N>
- * Uses only open/close/read/write; buffers I/O at 4096 bytes.
- */
 #include <fcntl.h>
 #include <unistd.h>
 #include <stdlib.h>
@@ -22,7 +17,7 @@ int main(int argc, char *argv[]) {
     }
 
     int start = atoi(argv[2]);
-    int end   = start + atoi(argv[3]); /* first line NOT to print */
+    int end   = start + atoi(argv[3]);
 
     char rbuf[BUF_SIZE];
     char wbuf[BUF_SIZE];
